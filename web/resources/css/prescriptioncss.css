@@ -1,0 +1,75 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Dec 16, 2018, 9:10:56 PM
+    Author     : arahman
+*/
+
+.panelGridCenter {
+    margin: 0 auto;
+}
+.companyHeaderGrid.ui-panelgrid>*>tr,
+.companyHeaderGrid.ui-panelgrid .ui-panelgrid-cell {
+    border: none;
+}
+.pgridcenter {
+    vertical-align: top;
+    horizontal-align: center;
+
+}
+.firstColumn {
+    width: 150px;
+}
+.secondColumn {
+    width: 150px;
+}
+.thirdColumn { 
+    width: 80px;
+}
+.fourthColumn{
+    width: 80px;
+
+}
+.col70{
+    width: 70%;
+
+}
+.col60{
+    width: 60%;
+
+}
+.col50{
+    width: 50%;
+
+}
+.col45{
+    width: 45%;
+
+}
+.col40{
+    width: 40%;
+
+}
+.col30{
+    width: 30%;
+
+}
+.col25{
+    width: 25%;
+
+}
+.col20{
+    width: 20%;
+
+}
+.col15{
+    width: 15%;
+
+}
+.col10{
+    width: 10%;
+
+}

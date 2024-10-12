@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            0
+        </session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>AddPrescription.xhtml</welcome-file>
+    </welcome-file-list>
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <!--<param-value>bootstrap</param-value>-->
+        <!--<param-value>black-tie</param-value>-->
+        <!--<param-value>casablanca</param-value>-->
+        <!--<param-value>humanity</param-value>-->
+        <!--<param-value>south-street</param-value>-->
+        <!--<param-value>cruze</param-value>-->
+        <!--<param-value>delta</param-value>-->
+        <!--<param-value>bluesky</param-value>-->
+        <!--<param-value>afterwork</param-value>-->
+        <!--<param-value>start</param-value>-->
+        <!--<param-value>redmond</param-value>-->
+        <!--<param-value>vader</param-value>-->
+        <!--<param-value>smoothness</param-value>-->
+        <!--<param-value>sunny</param-value>-->
+        <param-value>nova-dark</param-value>
+        <!--<param-value>pepper-grinder</param-value>-->
+        <!--        <param-value>rocket</param-value>-->
+        <!--        <param-value>rocket</param-value>-->
+        <!--<param-value>eggplant</param-value>-->
+        <!--<param-value>glass-x</param-value>-->
+        <!--<param-value>dark-hive</param-value>-->
+        <!--<param-value>excite-bike</param-value>-->
+    </context-param>
+    <context-param>
+        <param-name>primefaces.FONT_AWESOME</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <mime-mapping>  
+        <extension>woff2</extension>  
+        <mime-type>application/x-font-woff2</mime-type>  
+    </mime-mapping>
+
+    <context-param>
+        <param-name>jersey.config.server.provider.packages</param-name>
+        <param-value>
+            com.jersey.jaxb
+        </param-value>
+    </context-param>
+    <mime-mapping>
+        <extension>eot</extension>
+        <mime-type>application/vnd.ms-fontobject</mime-type>
+    </mime-mapping>
+    <mime-mapping>  
+        <extension>otf</extension>  
+        <mime-type>font/opentype</mime-type>  
+    </mime-mapping>      
+    <mime-mapping>  
+        <extension>ttf</extension>  
+        <mime-type>application/x-font-ttf</mime-type>  
+    </mime-mapping>      
+    <mime-mapping>  
+        <extension>woff</extension>  
+        <mime-type>application/x-font-woff</mime-type>  
+    </mime-mapping>
+    <mime-mapping>  
+        <extension>svg</extension>  
+        <mime-type>image/svg+xml</mime-type>  
+    </mime-mapping>
+  
+
+    <!--    <context-param>
+        <param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
+        <param-value>false</param-value>
+    </context-param>-->
+   
+</web-app>

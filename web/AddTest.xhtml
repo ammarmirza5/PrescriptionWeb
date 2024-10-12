@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+
+            <h:outputStylesheet library="css" name="prescriptioncss.css"  />
+            <style type="text/css">
+                .ui-row-editor .ui-row-editor-pencil {
+                    margin-left:8px;
+                }
+            </style>
+            <style type="text/css">
+                .ui-datatable .ui-datatable-header {
+                    text-align: right !important;
+                }
+
+                .ui-button-text-only .ui-button-text {
+                    padding: 0.3em 0.4em;
+                }
+
+                .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-header .ui-chkbox {
+                    visibility: hidden;
+                }
+
+                .ui-filter-column .ui-column-customfilter .custom-filter {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .year-spinner input {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+            </style>
+        </h:head>
+
+        <h:body>
+            <h:form id="testForm">
+                <h:messages id="messages"/>
+                <!--<p:autoUpdate>-->
+                <p:growl id="msgs" showDetail="true"/>
+                <!--</p:autoUpdate>-->
+                <!--                <p:themeSwitcher id="basic" style="width:165px">
+                                    <f:selectItem itemLabel="cupertino" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afterdark" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afternoon" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="skyblue" itemValue="cupertino" />
+                                    <f:selectItems value="#{themeSwitcherView.themes}" var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme.name}"/>
+                                </p:themeSwitcher>-->
+                <p:toolbar id="toolbar">
+                    <f:facet name="left">
+                        <p:commandButton ajax="false" type="submit" value="Prescription" immediate="true" action="AddPrescription" icon="fa fa-fw fa-edit" />
+                        <p:commandButton ajax="false" type="submit" value="Medcine" immediate="true" action="EditMedicine" icon="fa fa-fw fa-life-saver"/>
+                        <p:commandButton ajax="false" type="submit" value="History" immediate="true" action="EditPrescription" icon="fa fa-fw fa-clock-o"/>
+                        <p:commandButton ajax="false" type="submit" value="Store" icon="fa fa-fw fa-dot-circle-o"/>
+                        <p:commandButton ajax="false" type="submit" value="Test" immediate="true" icon="fa fa-fw fa-th-large" action="AddTest.xhtml?faces-redirect=true"/>
+
+                        <p:commandButton ajax="false" type="submit" value="Reports"  immediate="true" action="Reports.xhtml?faces-redirect=true"  icon="fa fa-fw fa-bar-chart"/>
+
+                    </f:facet>
+
+                    <f:facet name="right">
+                        <p:menuButton value="Navigate">
+                            <p:menuitem value="Home" disabled="true"/>
+                            <p:menuitem value="Prescription"  disabled="true"/>
+                            <p:menuitem value="Medicine" disabled="true"/>
+                        </p:menuButton>
+                    </f:facet>
+                </p:toolbar>
+                <p:spacer/>
+                <p:fieldset legend="Test">
+                    <p:panelGrid columns="2" style="width: 90%" columnClasses="pgridcenter,pgridcenter" styleClass="panelGridCenter companyHeaderGrid">
+                        <p:panelGrid columns="4" style="width: 500px" styleClass="companyHeaderGrid">
+                            <p:dataTable id="testTable" scrollable="true" scrollWidth="100%" scrollHeight="630" value="#{medicineBean.testList}" 
+                                           var="test" editable="true" pageLinks="10"
+                                           paginator="true" paginatorPosition="both" rows="10"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                     rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+                                         >
+                                <p:ajax event="rowEdit" listener="#{medicineBean.onRowTestEdit}" update=":testForm:msgs" />
+                                <p:ajax event="rowEditCancel" listener="#{medicineBean.onRowEditCancel}" update=":testForm:msgs" />
+                                <p:column headerText="Test Name" style="width:300px" filterBy="#{test.testDescription}"  filterMatchMode="contains">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><p:outputLabel value="#{test.testDescription}" /></f:facet>
+                                        <f:facet name="input"><p:inputText id="medicineNameInput" value="#{test.testDescription}" style="width:300px"/></f:facet>
+                                    </p:cellEditor>
+
+                                </p:column>
+                                 <p:column headerText="Unit" style="width:100px" filterBy="#{test.testDescription}"  filterMatchMode="contains">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><p:outputLabel value="#{test.units}" /></f:facet>
+                                        <f:facet name="input"><p:inputText id="testNameInput" value="#{test.units}" style="width:300px"/></f:facet>
+                                    </p:cellEditor>
+
+                                </p:column>
+
+                                <p:column headerText="Delete" style="text-align: center; width:90px">
+                                    <p:selectBooleanButton   value="#{test.testDeleted}"  offLabel="" onLabel="" onIcon="pi pi-times"  offIcon="pi pi-check" >
+                                        <p:ajax update=":testForm:msgs" listener="#{medicineBean.onTestCheckBoxClick(test)}"/>
+                                    </p:selectBooleanButton>
+                                </p:column>
+                                <p:column style="width:35px">
+                                    <p:rowEditor />
+                                </p:column>
+                            </p:dataTable>
+                        </p:panelGrid>
+                        <h:panelGroup>
+                            <p:spacer/>
+                            <p:fieldset legend="New Test">
+                                <p:panelGrid columns="2" style="width: 30px" styleClass="companyHeaderGrid">
+                                    
+                                    
+                                    
+                                    <h:outputText   value="Test Name" />
+                                    <p:inputText id="newTestName" value="#{medicineBean.newTestName}" style="width:300px" required="true" requiredMessage="Test name not set"/>
+                                      <h:outputText   value="Test Unit" />
+                                      <p:inputText id="newTestUnit" value="#{medicineBean.newTestUnit}" style="width:300px" required="true" requiredMessage="Test Unit not set"/>
+                                    
+                                    <h:outputText  value="Add" />
+                                    <p:commandButton id="cmdAddNewTest" value="Add Test" 
+                                                     action="#{medicineBean.addNewTest()}" process="newTestName newTestUnit @this" update="newTestName newTestUnit msgs testTable"/>
+                                </p:panelGrid>
+                            </p:fieldset>
+                            <p:spacer/>
+                          
+                        </h:panelGroup>
+                    </p:panelGrid>
+                </p:fieldset>
+            </h:form>
+        </h:body>
+    </f:view>
+</html>
+

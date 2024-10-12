@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <h:outputStylesheet library="css" name="prescriptioncss.css"  />
+        </h:head>
+
+        <h:body>
+            <h:form id="prescriptionForm">
+                <p:growl id="growl1" life="1000"/>
+                <p:growl id="msgs" showDetail="true" />
+                  <p:toolbar id="toolbar">
+                    <f:facet name="left">
+                        <p:commandButton ajax="false" type="submit" value="Prescription" immediate="true" action="AddPrescription.xhtml?faces-redirect=true" icon="fa fa-fw fa-edit" />
+                        <p:commandButton ajax="false" type="submit" value="Medcine" immediate="true" action="EditMedicine.xhtml?faces-redirect=true" icon="fa fa-fw fa-life-saver"/>
+                        <p:commandButton ajax="false" type="submit" value="History" immediate="true" action="EditPrescription.xhtml?faces-redirect=true" icon="fa fa-fw fa-clock-o"/>
+                        <p:commandButton ajax="false" type="submit" value="Store"  icon="fa fa-fw fa-dot-circle-o"/>
+                        <p:commandButton ajax="false" type="submit" value="Queue" immediate="true" action="Queue.xhtml?faces-redirect=true" icon="fa fa-fw fa-th-large"/>
+                        <p:commandButton ajax="false" type="submit" value="Reports"  immediate="true" action="Reports.xhtml?faces-redirect=true"  icon="fa fa-fw fa-bar-chart"/>
+                    </f:facet>
+                    <f:facet name="right">
+                        <p:menuButton value="Navigate">
+                            <p:menuitem value="Logout" action="#{loginBean.logout()}" disabled="#{loginBean.user==null}"  immediate="true"/>
+                            <p:menuitem value="Home" disabled="true"/>
+                            <p:menuitem value="Prescription"  disabled="true"/>
+                            <p:menuitem value="Medicine" disabled="true"/>
+                        </p:menuButton>
+                    </f:facet>
+                </p:toolbar>
+                <p:spacer/>
+
+                <p:panelGrid columns="2"  columnClasses="col40,col60" styleClass="pgridcenter companyHeaderGrid ui-fluid">
+                    <h:panelGroup>
+                        <p:fieldset legend="New Patient">
+                            <h:panelGrid columns="2" columnClasses="col40,col60" width="100%">
+                                <label class="label label-success">
+                                    Name:
+                                </label>
+                                <h:inputText value="#{patientQueueBean.patientName}" id="txtName" style="width: 90%"/>
+                                <label class="label label-success">
+                                    Phone:
+                                </label>
+                                <h:inputText value="#{patientQueueBean.patientPhone}" id="txtPhone" style="width: 90%"/>
+                                <label class="label label-success">
+                                    Address:
+                                </label>
+                                <h:inputText value="#{patientQueueBean.patientAddress}" id="txtAddress"  style="width: 90%"/>
+                                <label class="label label-success">
+                                    Gender:
+                                </label>
+                                <p:selectBooleanButton id="patientGender" value="#{patientQueueBean.patientGender}" 
+                                                       onLabel="Male"  offLabel="Female" style="width: 95%"/>
+                                <label class="label label-success">
+                                    Age:
+                                </label>
+                                <h:inputText value="#{patientQueueBean.patientAge}" id="txtAge" style="width: 90%"/>
+                                <label class="label label-success">
+                                    Blood Pressure:
+                                </label>
+                                <h:inputText value="#{patientQueueBean.patientBp}" id="txtBp" style="width: 90%"/>
+                                <label class="label label-success">
+                                    Weight:
+                                </label>
+                                <h:inputText value="#{patientQueueBean.patientWeight}" id="txtWeight"  style="width: 90%"/>
+                                <label class="label label-success">
+                                    Pulse:
+                                </label>
+                                <h:inputText value="#{patientQueueBean.patientPulse}" id="txtPulse" style="width: 90%"/>
+                            </h:panelGrid>
+
+                            <p:commandButton value="Add Subscriber" action="#{patientQueueBean.addSubscriber}" style="margin-top: 10px"
+                                             update="tblsubs txtName patientGender txtPhone txtAddress txtAge txtBp txtWeight txtPulse @this" process="txtName patientGender txtPhone txtAddress txtAge txtBp txtWeight txtPulse @this"/>
+                        </p:fieldset>
+                    </h:panelGroup>
+                    <h:panelGroup>
+
+                        <p:fieldset legend="Queue">
+                            <p:dataTable id="tblsubs" var="subs" value="#{patientQueueBean.subscriptions}" selectionMode="single" selection="#{patientQueueBean.queuePatient}"
+                                         rowKey="#{subs.patientQueueId}" rowStyleClass="#{subs.queueStatus eq 0 ? 'row-waiting' :subs.queueStatus eq 1 ? 'row-served' : subs.queueStatus eq 2 ? 'row-skipped' :'row-cancelled'}">
+                                <p:column headerText="Token" style="width:60px;text-align: center;">
+                                    <h:outputText value="#{subs.patientQueueId}" />
+                                </p:column>
+                                <p:column headerText="Name" style="width:150px">
+                                    <h:outputText value="#{subs.patientName}" />
+                                </p:column>
+                                <p:column headerText="Phone" style="width:100px; text-align: center;">
+                                    <h:outputText value="#{subs.patientPhoneNumber}" />
+                                </p:column>
+                                <p:column headerText="Address" style="width:100px;">
+                                    <h:outputText value="#{subs.patientAddress}" />
+                                </p:column>
+                                <p:column headerText="Status" style="width:60px;text-align: center;">
+                                    <h:outputText value="#{subs.subscriptionStatusAsString}" />
+                                </p:column>
+                                <p:column headerText="Controls" style="width:160px;text-align: center;">
+                                    <p:commandButton action="#{patientQueueBean.servedBtnActionListener(subs)}" style="width: 35px" icon="fa fa-fw fa-check-square" process="@this" update="tblsubs"/>
+                                    <p:commandButton action="#{patientQueueBean.cancelBtnActionListener(subs)}"  style="width: 35px" icon="fa fa-fw fa-times" process="@this" update="tblsubs"/>
+                                    <p:commandButton action="#{patientQueueBean.skipBtnActionListener(subs)}" style="width: 35px" icon="fa fa-fw fa-fast-forward" process="@this" update="tblsubs"/>
+                                    <p:commandButton action="#{patientQueueBean.unSkipBtnActionListener(subs)}" style="width: 35px" icon="fa fa-fw fa-download" process="@this" update="tblsubs"/>
+                                </p:column>
+                            </p:dataTable>  
+                        </p:fieldset>
+                    </h:panelGroup>
+                </p:panelGrid>
+            </h:form>
+        </h:body>
+
+    </f:view>
+
+</html>
+

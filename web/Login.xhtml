@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <h:outputStylesheet library="css" name="prescriptioncss.css"  />
+        </h:head>
+
+        <h:body>
+            <h:form>
+                <p:growl showDetail="true" life="3000" />
+                <p:toolbar id="toolbar">
+
+                    <f:facet name="right">
+                        <p:menuButton value="Navigate">
+                            <p:menuitem value="Logout" action="#{loginBean.logout()}" disabled="#{loginBean.user==null}"  immediate="true"/>
+                        </p:menuButton>
+                    </f:facet>
+                </p:toolbar>
+                <p:spacer style="height: 100px"/>
+                <!--<p:commandLink  action="#{loginBean.logout()}" value="Logout" rendered="#{loginBean.user!=null}"  immediate="true"/>-->
+                <p:fieldset legend="User Login" style="width: 60%" styleClass="panelGridCenter">
+                    <p:spacer/>
+                    <p:panelGrid columns="2" style="width: 50%" styleClass="panelGridCenter companyHeaderGrid ui-fluid">
+                        <p:outputLabel >User Phone:</p:outputLabel>
+                        <p:inputText value="#{loginBean.userPhoneNumber}" styleClass="form-control"></p:inputText>
+                        <p:outputLabel>Password:</p:outputLabel>
+                        <p:password value="#{loginBean.userPassword}"/>
+                    </p:panelGrid>
+                    <p:panelGrid columns="1" style="width: 50%" styleClass="panelGridCenter companyHeaderGrid ui-fluid">
+                        <p:commandButton value="Login" style="width: 100%" action="#{loginBean.authenticateUser()}"></p:commandButton>
+                    </p:panelGrid>
+                    <p:spacer/>
+                </p:fieldset>
+            </h:form>
+        </h:body>
+
+    </f:view>
+</html>
+

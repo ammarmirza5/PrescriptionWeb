@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <h:outputStylesheet library="css" name="prescriptioncss.css" />
+            <script type="text/javascript">
+                function endsWithSpace(itemLabel, filterValue) {
+                    return filterValue.endsWith(' ');
+                }
+            </script>
+
+        </h:head>
+
+        <h:body>
+            <h:form id="prescriptionForm">
+                <h:messages id="messages"/>
+                <!--<p:autoUpdate>-->
+                <p:growl id="msgs" showDetail="true"/>
+                <!--</p:autoUpdate>-->
+                <!--                <p:themeSwitcher id="basic" style="width:165px">
+                                    <f:selectItem itemLabel="cupertino" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afterdark" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afternoon" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="skyblue" itemValue="cupertino" />
+                                    <f:selectItems value="#{themeSwitcherView.themes}" var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme.name}"/>
+                                </p:themeSwitcher>-->
+                <p:toolbar id="toolbar">
+                    <f:facet name="left">
+                        <p:commandButton ajax="false" type="submit" value="Prescription" immediate="true" action="AddPrescription.xhtml?faces-redirect=true" icon="fa fa-fw fa-edit" />
+                        <p:commandButton ajax="false" type="submit" value="Medcine" immediate="true" action="EditMedicine.xhtml?faces-redirect=true" icon="fa fa-fw fa-life-saver"/>
+                        <p:commandButton ajax="false" type="submit" value="History" immediate="true" action="EditPrescription.xhtml?faces-redirect=true" icon="fa fa-fw fa-clock-o"/>
+                        <p:commandButton ajax="false" type="submit" value="Store" icon="fa fa-fw fa-dot-circle-o"/>
+                        <p:commandButton ajax="false" type="submit" value="Test" immediate="true" icon="fa fa-fw fa-th-large" action="AddTest.xhtml?faces-redirect=true"/>
+                        <p:commandButton ajax="false" type="submit" value="Reports"  immediate="true" action="Reports.xhtml?faces-redirect=true"  icon="fa fa-fw fa-bar-chart"/>
+                    </f:facet>
+                    <f:facet name="right">
+                        <p:menuButton value="Navigate">
+                            <p:menuitem value="Logout" action="#{loginBean.logout()}" disabled="#{loginBean.user==null}"  immediate="true"/>
+                            <p:menuitem value="Home" disabled="true"/>
+                            <p:menuitem value="Prescription"  disabled="true"/>
+                            <p:menuitem value="Medicine" disabled="true"/>
+                        </p:menuButton>
+                    </f:facet>
+                </p:toolbar>
+                <p:spacer/>
+                <div class="ui-fluid">
+                    <p:fieldset legend="New Prescription">
+                        <h:panelGrid columns="2" style="width:100%" columnClasses="col40,col60" 
+                                     styleClass="panelGridCenter companyHeaderGrid ui-fluid">
+
+                            <h:panelGroup>
+
+                                <p:fieldset legend="Patient">
+                                    <p:panelGrid columns="2" styleClass="companyHeaderGrid" style="width:100%">
+                                        <p:outputLabel>
+                                            Type
+                                        </p:outputLabel>
+                                        <p:selectOneRadio id="patientType" value="#{addPrescriptionBean.patientType}">
+                                            <f:selectItem itemValue="#{true}" itemLabel="New" />
+                                            <f:selectItem itemValue="#{false}" itemLabel="Visiting" />
+                                            <f:ajax execute="@this" render="patientId patientName patientAddress patientGender patientAge patientPhone advises tests"/>
+                                        </p:selectOneRadio>
+                                        <p:outputLabel>
+                                            ID
+                                        </p:outputLabel>
+
+                                        <p:autoComplete id="patientId" value="#{addPrescriptionBean.patientString}" completeMethod="#{addPrescriptionBean.filterPatients}"
+                                                        disabled="#{addPrescriptionBean.patientType}" var="patients" itemLabel="#{patients.toString()}" itemValue="#{patients}" converter="#{patientConverter}" forceSelection="true"
+                                                        emptyMessage="Not Found" queryDelay="750" >
+                                            <f:ajax event="itemSelect" execute="this" listener="#{addPrescriptionBean.loadLastAdvise}"  render="patientId patientName patientAddress patientGender patientAge patientWeight primary secondary tertiary patientPhone advises tests"/>
+                                        </p:autoComplete>
+
+                                        <p:outputLabel for="@next" value="Name"/>
+                                        <p:inputText  id="patientName" style="width: 100%" value="#{addPrescriptionBean.patientName}" 
+                                                      required="true" requiredMessage="Patient Name is Required" disabled="#{!addPrescriptionBean.patientType}"/>
+
+                                        <p:outputLabel>
+                                            Address
+                                        </p:outputLabel>
+                                        <p:inputText  id="patientAddress" style="width: 100%" value="#{addPrescriptionBean.patientAddress}" 
+                                                      disabled="#{!addPrescriptionBean.patientType}" required="true"  requiredMessage="Patient Address is Required"></p:inputText >
+                                        <p:outputLabel>
+                                            Phone
+                                        </p:outputLabel>
+                                        <p:inputText  id="patientPhone" style="width: 100%" value="#{addPrescriptionBean.patientPhone}" 
+                                                      disabled="#{!addPrescriptionBean.patientType}"   />
+                                    </p:panelGrid>
+                                    <p:panelGrid columns="4" styleClass="companyHeaderGrid">
+                                        <p:outputLabel>
+                                            Gender
+                                        </p:outputLabel>
+                                        <p:selectBooleanButton id="patientGender" style="width:100%" value="#{addPrescriptionBean.patientGender}" onLabel="Male"  offLabel="Female" 
+                                                               disabled="#{!addPrescriptionBean.patientType}"  />
+                                        <p:outputLabel>
+                                            Age
+                                        </p:outputLabel>
+                                        <p:inputText id="patientAge" style="width:100%" value="#{addPrescriptionBean.patientAge}"  
+                                                     required="true"  requiredMessage="Patient Age is Required"/>
+                                        <p:outputLabel>
+                                            BP
+                                        </p:outputLabel>
+                                        <p:inputText id="bloodPressure"  style="width:100%" value="#{addPrescriptionBean.patientBp}"/>
+                                        <p:outputLabel>
+                                            Temp
+                                        </p:outputLabel>
+                                        <p:inputText id="patientTemperature" style="width:100%" value="#{addPrescriptionBean.patientTemperature}"/>
+                                        <p:outputLabel>
+                                            Weight
+                                        </p:outputLabel>
+                                        <p:inputText id="patientWeight" style="width:100%" value="#{addPrescriptionBean.patientWeight}" />
+                                        <p:outputLabel>
+                                            Pulse
+                                        </p:outputLabel>
+                                        <p:inputText id="patientPulse" style="width:100%" value="#{addPrescriptionBean.patientPulse}" />
+                                    </p:panelGrid>
+                                </p:fieldset>
+                                <p:spacer/>
+                                <p:fieldset legend="Diagnosis">
+                                    <p:panelGrid columns="2" styleClass="companyHeaderGrid" style="width:100%">
+                                        <p:outputLabel >
+                                            Primary
+                                        </p:outputLabel>
+                                        <p:inputText  id="primary" value="#{addPrescriptionBean.primaryDiagnosis}"   />
+                                        <p:outputLabel>
+                                            Secondary
+                                        </p:outputLabel>
+                                        <p:inputText   id="secondary" value="#{addPrescriptionBean.secondaryDiagnosis}"   />
+                                        <p:outputLabel>
+                                            Tertiary
+                                        </p:outputLabel>
+                                        <p:inputText   id="tertiary" value="#{addPrescriptionBean.tertiaryDiagnosis}"   />
+                                    </p:panelGrid>
+                                </p:fieldset>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:fieldset legend="Advise" >
+
+                                    <h:panelGrid columns="4"  columnClasses="col45,col25,col15,col15">
+                                        <h:outputText class="label label-success"  value="Medicine" />
+                                        <h:outputText class="label label-success"  value="Dosage" />
+                                        <h:outputText class="label label-success"  value="Days"  />
+                                        <h:panelGroup/>
+                                        <p:selectOneMenu id="medicine" style="width: 100%" value="#{addPrescriptionBean.medicineId}" var="med" filter="true" filterMatchMode="contains" >
+                                            <f:selectItems value="#{addPrescriptionBean.medicineList}" var="meds" itemLabel="#{meds.medicineName}" itemValue="#{meds.medicineId}" />
+                                            <f:ajax execute="this" render="dosage days"/>
+                                        </p:selectOneMenu>
+                                        <p:selectOneMenu id="dosage" value="#{addPrescriptionBean.medicineDosage}"  editable="true">
+                                            <f:selectItem itemValue="OD" itemLabel="OD"/>
+                                            <f:selectItem itemValue="BD" itemLabel="BD"/>
+                                            <f:selectItem itemValue="1+1+1" itemLabel="1+1+1"/>
+                                            <f:selectItem itemValue="6 Weekly" itemLabel="6 Weekly"/>
+                                        </p:selectOneMenu >
+                                        <p:inputText  id="days" value="#{addPrescriptionBean.medicineDays}" />
+                                        <p:commandButton id="cmdSave" ajax="true" type="submit" value="Print" accesskey="p" action="#{addPrescriptionBean.addPrescription}" 
+                                                         process="patientId patientName patientAddress patientGender patientAge patientPhone bloodPressure patientTemperature patientWeight
+                                                         patientPulse primary secondary tertiary @this" update="@form" 
+                                                         />
+
+                                        <h:outputScript>
+                                            function openPdfReport() {
+                                            window.open('/PrescriptionWeb/reports/pdf', '_blank');
+                                            }
+                                        </h:outputScript>
+
+                                    </h:panelGrid>
+                                    <p:commandButton id="cmdAddAdvise" accesskey="a" update="medicine advises" process="medicine dosage days @this" icon="fa fa-fw fa-plus" value="Add" action="#{addPrescriptionBean.addAdvise}"/>
+                                    <p:dataTable id="advises" var="advise" value="#{addPrescriptionBean.patientAdvises}">
+                                        <p:column headerText="Medicine" style="width: 45%">
+                                            <h:outputText value="#{advise.medicineName}" />
+                                        </p:column>
+
+                                        <p:column headerText="Dosage" style="text-align: center;width: 25%" >
+                                            <h:outputText value="#{advise.medicineDosage}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Days" style="text-align: center;width:15%" >
+                                            <h:outputText value="#{advise.medicineDays}" />
+                                        </p:column>
+                                        <p:column headerText="Delete" style="text-align: center;width: 15%">
+                                            <p:commandButton  value="Delete" action="#{addPrescriptionBean.deleteMedicine(advise)}"  process="@this" update="advises"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:fieldset>
+                                <p:spacer/>
+                                <!--<h:form id="labTestForm">-->
+                                <h:messages/>
+                                <p:fieldset legend="Investigations" toggleable="true" toggleSpeed="500" collapsed="false">
+                                    <p:panelGrid columns="3"  columnClasses="col50, col25,col25">
+                                        <h:outputText class="label label-success"  value="Test" />
+                                        <h:outputText class="label label-success"  value="Value" />
+                                        <h:outputText class="label label-success"  value="Units" />
+
+                                        <p:selectOneMenu id="testDesc" style="width: 100%"  value="#{addPrescriptionBean.testId}" var="med" filter="true" filterMatchMode="contains" >
+                                            <f:selectItems value="#{addPrescriptionBean.testsList}" var="test" itemLabel="#{test.testDescription}" itemValue="#{test.testId}" />
+                                            <f:ajax execute="this" render="testUnit"/>
+                                        </p:selectOneMenu>
+                                        <p:inputText  id="testValue" value="#{addPrescriptionBean.testValue}" />
+                                        <p:outputLabel  id="testUnit" value="#{addPrescriptionBean.testUnit}" />
+                                    </p:panelGrid>
+                                    <p:commandButton id="cmdAddTest"  accesskey="t" style="height: 40px" update="tests testValue" process="testDesc testValue testUnit @this" 
+                                                     icon="fa fa-fw fa-plus" value="Add Test" action="#{addPrescriptionBean.addTest}"/>
+                                    <p:dataTable id="tests" var="examine" value="#{addPrescriptionBean.testResultList}">
+                                        <p:column headerText="Test" style="width: 60%">
+                                            <h:outputText value="#{examine.testDescripton}" />
+                                        </p:column>
+
+                                        <p:column headerText="Value" style="text-align: center;width: 20%" >
+                                            <h:outputText value="#{examine.testValue}"/>
+                                        </p:column>
+                                        <p:column headerText="Unit" style="text-align: center;width: 20%" >
+                                            <h:outputText value="#{examine.testUnit}"/>
+                                        </p:column>
+                                        <p:column headerText="Delete" style="text-align: center;width: 20%">
+                                            <p:commandButton  value="Delete" action="#{addPrescriptionBean.deleteTest(examine)}"  process="@this" update="tests"/>
+                                        </p:column>
+                                    </p:dataTable>
+
+                                </p:fieldset>
+                                <!--</h:form>-->
+
+                                <p:fieldset legend="New Medicine" toggleable="true" toggleSpeed="500" collapsed="true">
+                                    <p:panelGrid columns="2" styleClass="companyHeaderGrid" style="width:100%">
+                                        <h:outputText class="label label-success"  value="Category"/>
+                                        <p:selectOneMenu id="newMedicineCategory" value="#{addPrescriptionBean.newMedicineCategory}" var="cat" 
+                                                         filter="true" filterMatchMode="contains">
+                                            <f:selectItems value="#{addPrescriptionBean.medicineCategories}" var="cats" itemLabel="#{cats.categoryDescription}" itemValue="#{cats}" />
+                                            <f:ajax execute="@this"/>
+                                        </p:selectOneMenu>
+                                        <h:outputText   value="Medicine Name" />
+                                        <p:inputText id="newMedicineName" value="#{addPrescriptionBean.newMedicineName}" required="true" requiredMessage="Medicine name not set"/>
+                                        <h:outputText value="Dosage" />
+                                        <p:inputText id="newMedicineDosage" value="#{addPrescriptionBean.newMedicineDosage}" required="true" requiredMessage="Default Dosage not set"/>
+                                        <h:outputText  value="Days" />
+                                        <p:inputText id="newMedicineDays" value="#{addPrescriptionBean.newMedicineDays}" required="true" requiredMessage="Default days not set"/>
+                                        <h:outputText  value="Add" />
+                                        <p:commandButton id="cmdAddNewMedicine" value="Add New"  
+                                                         action="#{addPrescriptionBean.addNewMedicine()}" process="@this newMedicineCategory newMedicineName 
+                                                         newMedicineDosage newMedicineDays " />
+                                    </p:panelGrid>
+                                </p:fieldset>
+
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </div>
+            </h:form>
+        </h:body>
+    </f:view>
+</html>
+

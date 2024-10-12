@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+
+            <h:outputStylesheet library="css" name="prescriptioncss.css"  />
+            <style type="text/css">
+                .ui-row-editor .ui-row-editor-pencil {
+                    margin-left:8px;
+                }
+            </style>
+            <style type="text/css">
+                .ui-datatable .ui-datatable-header {
+                    text-align: right !important;
+                }
+
+                .ui-button-text-only .ui-button-text {
+                    padding: 0.3em 0.4em;
+                }
+
+                .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-header .ui-chkbox {
+                    visibility: hidden;
+                }
+
+                .ui-filter-column .ui-column-customfilter .custom-filter {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .year-spinner input {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+            </style>
+        </h:head>
+
+        <h:body>
+            <h:form id="medicineForm">
+                <h:messages id="messages"/>
+                <!--<p:autoUpdate>-->
+                <p:growl id="msgs" showDetail="true"/>
+                <!--</p:autoUpdate>-->
+                <!--                <p:themeSwitcher id="basic" style="width:165px">
+                                    <f:selectItem itemLabel="cupertino" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afterdark" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afternoon" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="skyblue" itemValue="cupertino" />
+                                    <f:selectItems value="#{themeSwitcherView.themes}" var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme.name}"/>
+                                </p:themeSwitcher>-->
+                <p:toolbar id="toolbar">
+                    <f:facet name="left">
+                       <p:commandButton ajax="false" type="submit" value="Sale" immediate="true" action="Sale.xhtml?faces-redirect=true" icon="fa fa-fw fa-edit" />
+                        <p:commandButton ajax="false" type="submit" value="Medicine Stock" immediate="true" action="SaleMedicine.xhtml?faces-redirect=true" icon="fa fa-fw fa-life-saver"/>
+                        <p:commandButton ajax="false" type="submit" value="Daily Sale Report" immediate="true" action="DailySaleReport.xhtml?faces-redirect=true" icon="fa fa-fw fa-life-saver"/>
+                        <p:commandButton ajax="false" type="submit" value="Daily Purchase Report" immediate="true" action="PurchaseReport.xhtml?faces-redirect=true" icon="fa fa-fw fa-clock-o"/>
+                        
+                    </f:facet>
+
+                    <f:facet name="right">
+                        <p:menuButton value="Navigate">
+                            <p:menuitem value="Home" disabled="true"/>
+                            <p:menuitem value="Prescription"  disabled="true"/>
+                            <p:menuitem value="Medicine" disabled="true"/>
+                        </p:menuButton>
+                    </f:facet>
+                </p:toolbar>
+                <p:spacer/>
+                <p:fieldset legend="Edit Medicine">
+                    <p:panelGrid columns="2" style="width: 90%" columnClasses="pgridcenter,pgridcenter" styleClass="panelGridCenter companyHeaderGrid">
+                        <p:panelGrid columns="4" style="width: 500px" styleClass="companyHeaderGrid">
+                              <p:dataTable id="medicineTable" scrollable="true" scrollWidth="100%" scrollHeight="630" value="#{medicineBean.medicineList}" 
+                                           var="medicine" editable="true" pageLinks="10"
+                                           paginator="true" paginatorPosition="both" rows="10"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                     rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+                                         >
+                                <p:ajax event="rowEdit" listener="#{medicineBean.onRowEdit}" update=":medicineForm:msgs" />
+                                <p:ajax event="rowEditCancel" listener="#{medicineBean.onRowEditCancel}" update=":medicineForm:msgs" />
+                                <p:column headerText="Medicine" style="width:300px" filterBy="#{medicine.medicineName}" footerText="contains" filterMatchMode="contains">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><p:outputLabel value="#{medicine.medicineName}" /></f:facet>
+                                        <f:facet name="input"><p:inputText id="medicineNameInput" value="#{medicine.medicineName}" style="width:300px"/></f:facet>
+                                    </p:cellEditor>
+
+                                </p:column>
+
+                                <p:column headerText="Dosage" style="text-align: center; width:200px">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{medicine.defatultDosage}"/></f:facet>
+                                        <f:facet name="input"><h:inputText id="medicineDosageInput" value="#{medicine.defatultDosage}" style="width:200px"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Days" style="text-align: center; width:100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{medicine.defaultDays}" /></f:facet>
+                                        <f:facet name="input"><h:inputText id="medicineDaysInput" value="#{medicine.defaultDays}" style="width:100px"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                 <p:column headerText="Stock" style="text-align: center; width:100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{medicine.medicineStock}" /></f:facet>
+                                        <f:facet name="input"><h:inputText id="medicineStockInput" value="#{medicine.medicineStock}" style="width:100px"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Price" style="text-align: center; width:100px">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{medicine.medicinePrice}" /></f:facet>
+                                        <f:facet name="input"><h:inputText id="medicinePriceInput" value="#{medicine.medicinePrice}" style="width:100px"/></f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Delete" style="text-align: center; width:90px">
+                                    <p:selectBooleanButton   value="#{medicine.medicineDeleted}"  offLabel="" onLabel="" onIcon="pi pi-times"  offIcon="pi pi-check" >
+                                        <p:ajax update=":medicineForm:msgs" listener="#{medicineBean.onCheckBoxClick(medicine)}"/>
+                                    </p:selectBooleanButton>
+                                </p:column>
+                                <p:column style="width:35px">
+                                    <p:rowEditor />
+                                </p:column>
+                            </p:dataTable>
+                        </p:panelGrid>
+                        <h:panelGroup>
+                            <p:spacer/>
+                            <p:fieldset legend="New Medicine">
+                                <p:panelGrid columns="2" style="width: 30px" styleClass="companyHeaderGrid">
+                                    <h:outputText class="label label-success"  value="Category" />
+                                    <p:selectOneMenu id="newMedicineCategory" value="#{medicineBean.newMedicineCategory}" var="cat" 
+                                                     filter="true" filterMatchMode="contains" style="width:150px">
+                                        <f:selectItems value="#{medicineBean.medicineCategories}" var="cats" itemLabel="#{cats.categoryDescription}" itemValue="#{cats}" />
+                                        <f:ajax execute="@this"/>
+                                    </p:selectOneMenu>
+                                    <h:panelGroup/>
+                                    <h:panelGroup/>
+                                    <h:outputText   value="Medicine Name" />
+                                    <p:inputText id="newMedicineName" value="#{medicineBean.newMedicineName}" style="width:300px" required="true" requiredMessage="Medicine name not set"/>
+                                    <h:outputText value="Dosage" />
+                                    <p:inputText id="newMedicineDosage" value="#{medicineBean.newMedicineDosage}" style="width:200px"  required="true" requiredMessage="Default Dosage not set"/>
+                                    <h:outputText  value="Days" />
+                                    <p:inputText id="newMedicineDays" value="#{medicineBean.newMedicineDays}" style="width:200px"  required="true" requiredMessage="Default days not set"/>
+                                    <h:outputText  value="Add" />
+                                    <p:commandButton id="cmdAddNewMedicine" value="Add New"  actionListener="#{medicineBean.reloadMedicine()}"
+                                                     action="#{medicineBean.addNewMedicine}" process="newMedicineCategory newMedicineName 
+                                                     newMedicineDosage newMedicineDays @this" update="newMedicineName 
+                                                     newMedicineDosage newMedicineDays msgs medicineTable"/>
+                                </p:panelGrid>
+                            </p:fieldset>
+                            <p:spacer/>
+                            <p:fieldset legend="New Category">
+                                <p:panelGrid columns="2" style="width: 300px" styleClass="companyHeaderGrid">
+                                    <h:outputText  value="Category" />
+                                    <p:inputText id="newCategoryAdd" value="#{medicineBean.newCategoryAdd}" style="width:300px"  required="true" requiredMessage="Category name is required"/>
+                                    <h:panelGroup/>
+                                    <p:commandButton id="cmdAddNewCategory" actionListener="#{medicineBean.reloadMedicine()}" value="Add Category"  
+                                                     action="#{medicineBean.addNewCategory}" process="newCategoryAdd @this" update=" newCategoryAdd msgs"/>
+                                </p:panelGrid>
+                            </p:fieldset>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                </p:fieldset>
+            </h:form>
+        </h:body>
+    </f:view>
+</html>
+

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="LabTestResult" pageWidth="451" pageHeight="828" whenNoDataType="NoPages" columnWidth="451" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="600a0264-8757-4e17-9c1c-baf1c40eb8e2">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<property name="com.jaspersoft.studio.unit." value="inch"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="inch"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="inch"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="229"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="760"/>
+	<parameter name="patient_visit_id" class="java.lang.String"/>
+	<parameter name="dr_name" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT a.patient_visit_id,m.medicine_name,a.dosage,a.days,a.instructions FROM advise a inner join medicine m
+on a.medicine_medicine_id=m.medicine_id
+where a.patient_visit_id=$P{patient_visit_id}]]>
+	</queryString>
+	<field name="patient_visit_id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="patient_visit_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="advise"/>
+	</field>
+	<field name="medicine_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="medicine_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="medicine"/>
+	</field>
+	<field name="dosage" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="dosage"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="advise"/>
+	</field>
+	<field name="days" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="days"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="advise"/>
+	</field>
+	<field name="instructions" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="instructions"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="advise"/>
+	</field>
+	<group name="patient_visit_id" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{patient_visit_id}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField textAdjust="StretchHeight">
+				<reportElement x="30" y="0" width="200" height="16" printWhenGroupChanges="patient_visit_id" uuid="e0f48b85-0223-46f7-af2f-0fae8cb62bd0">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8e828b05-aaad-4504-bc45-a611eaf5c36a"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[org.apache.commons.lang.WordUtils.capitalizeFully($F{medicine_name}.toLowerCase())]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="240" y="0" width="66" height="16" printWhenGroupChanges="patient_visit_id" uuid="d5b94612-59b8-4d1b-9a63-21051accb221">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0382fb2f-b595-4d51-8b86-2ddaca51e32d"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dosage}.toLowerCase()]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="312" y="0" width="27" height="16" printWhenGroupChanges="patient_visit_id" uuid="34ae29a1-e19e-41c0-984b-b4f6e03afe60">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="aba61e87-2956-43ca-b048-f5cb8fc1f82a"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{days}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="345" y="0" width="22" height="16" printWhenGroupChanges="patient_visit_id" uuid="9c804117-c94b-497c-8055-152d7d51679c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="aba61e87-2956-43ca-b048-f5cb8fc1f82a"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[days]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="0" width="20" height="16" printWhenGroupChanges="patient_visit_id" uuid="7bf7b2ca-2d4a-4ab8-b515-460a66e1a308"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="10" isBold="false" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}+"."]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="99">
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="280" y="70" width="109" height="14" uuid="53b3d12c-9d5d-47c6-8be2-ff9f6751bd03"/>
+				<textElement textAlignment="Left" rotation="None">
+					<font fontName="Arial" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dr. Rizwan Haider]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

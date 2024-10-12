@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <title>Auto Store-Add Item</title>
+            <script type="text/javascript">
+                function homeScreen() {
+                    window.location = "NewOrder.xhtml";
+                }
+                function editOrderScreen() {
+                    window.location = "EditOrder.xhtml";
+                }
+                function itemScreen() {
+                    window.location = "AddItem.xhtml";
+                }
+                function itemCategoryScreen() {
+                    window.location = "AddItemCategory.xhtml";
+                }
+                function paymentScreen() {
+                    window.location = "PaymentHistory.xhtml";
+                }
+                function customerScreen() {
+                    window.location = "AddCustomer.xhtml";
+                }
+                function purchaseScreen() {
+                    window.location = "AddPurchase.xhtml";
+                }
+                function addItemCategory() {
+
+                }
+            </script>
+            <h:outputStylesheet library="css" name="prescriptioncss.css"  />
+            <style type="text/css">
+                .ui-row-editor .ui-row-editor-pencil {
+                    margin-left:8px;
+                }
+            </style>
+            <style type="text/css">
+                .ui-datatable .ui-datatable-header {
+                    text-align: right !important;
+                }
+
+                .ui-button-text-only .ui-button-text {
+                    padding: 0.3em 0.4em;
+                }
+
+                .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-header .ui-chkbox {
+                    visibility: hidden;
+                }
+
+                .ui-filter-column .ui-column-customfilter .custom-filter {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .year-spinner input {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+            </style>
+        </h:head>
+
+        <h:body>
+            <h:form id="itemForm">
+                <h:messages id="messages"/>
+                <!--<p:autoUpdate>-->
+                <p:growl id="msgs" showDetail="true"/>
+                <!--</p:autoUpdate>-->
+                <!--                <p:themeSwitcher id="basic" style="width:165px">
+                                    <f:selectItem itemLabel="cupertino" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afterdark" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afternoon" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="skyblue" itemValue="cupertino" />
+                                    <f:selectItems value="#{themeSwitcherView.themes}" var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme.name}"/>
+                                </p:themeSwitcher>-->
+                <p:toolbar id="toolbar">
+                    <f:facet name="left">
+                        <p:commandButton ajax="false" type="submit" value="Sale" immediate="true" action="Sale.xhtml?faces-redirect=true" icon="fa fa-fw fa-edit" />
+                        <p:commandButton ajax="false" type="submit" value="Medicine Stock" immediate="true" action="SaleMedicine.xhtml?faces-redirect=true" icon="fa fa-fw fa-life-saver"/>
+                        <p:commandButton ajax="false" type="submit" value="Daily Sale Report" immediate="true" action="DailySaleReport.xhtml?faces-redirect=true" icon="fa fa-fw fa-life-saver"/>
+                        <p:commandButton ajax="false" type="submit" value="Daily Purchase Report" immediate="true" action="PurchaseReport.xhtml?faces-redirect=true" icon="fa fa-fw fa-clock-o"/>
+                    </f:facet>
+                    <f:facet name="right">
+                        <p:menuButton value="Navigate">
+                            <p:menuitem value="Logout" action="#{loginBean.logout()}" disabled="#{loginBean.user==null}"  immediate="true"/>
+                            <p:menuitem value="Home" disabled="true"/>
+                            <p:menuitem value="Prescription"  disabled="true"/>
+                            <p:menuitem value="Medicine" disabled="true"/>
+                        </p:menuButton>
+                    </f:facet>
+                </p:toolbar>
+                <pLspacer/> 
+                <p:fieldset legend="Select Dates">
+                    <center><p:panelGrid style="" columns="4">
+                            <h:outputLabel value="Start Date"/>
+                            <p:datePicker id="startDate" required="true" requiredMessage="Purchase Date is necessary" value="#{saleBean.purchaseDate}"
+                                          pattern="yyyy/MM/dd">
+                                <f:convertDateTime pattern="yyyy/MM/dd" type="localDate"/>
+                            </p:datePicker> 
+
+                            <h:outputLabel value="Start Date"/>
+                            <p:datePicker id="endDate" required="true" requiredMessage="Purchase Date is necessary" value="#{saleBean.purchaseDate}"
+                                          pattern="yyyy/MM/dd">
+                                <f:convertDateTime pattern="yyyy/MM/dd" type="localDate"/>
+                            </p:datePicker> 
+
+                        </p:panelGrid></center>
+
+                </p:fieldset>
+                <p:fieldset legend="Medicine Sale Report">
+                    <p:panelGrid columns="1" style="width: 100%" styleClass="companyHeaderGrid">
+                        <p:dataTable id="medicineSaleReport" scrollable="true" scrollWidth="100%" scrollHeight="630" value="#{reportsBean.medicineSaleReportByDay}" 
+                                     var="medSale" editable="true" >
+
+                            <p:column headerText="Medicine Name" style="width:100px" filterBy="#{medSale.medicineId.medicineName}"  filterMatchMode="contains">
+                                <h:outputText value="#{medSale.medicineId.medicineName}"/>
+
+                            </p:column>
+                            <p:column headerText="Medicine Name" style="width:100px" filterBy="#{medSale.medicineId.medicineName}"  filterMatchMode="contains">
+                                <h:outputText value="#{medSale.medicineId.medicineName}"/>
+
+                            </p:column>
+
+
+                        </p:dataTable>
+                    </p:panelGrid>
+
+
+                </p:fieldset>
+            </h:form>
+        </h:body>
+    </f:view>
+</html>
+

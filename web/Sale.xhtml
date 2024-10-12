@@ -1,0 +1,220 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <h:outputStylesheet library="css" name="prescriptioncss.css" />
+            <script type="text/javascript">
+                function endsWithSpace(itemLabel, filterValue) {
+                    return filterValue.endsWith(' ');
+                }
+            </script>
+
+        </h:head>
+
+        <h:body>
+            <h:form id="saleForm">
+                <!--<h:messages id="messages"/>-->
+                <!--<p:autoUpdate>-->
+                <p:growl id="msgs" showDetail="true"/>
+                <!--</p:autoUpdate>-->
+                <!--                <p:themeSwitcher id="basic" style="width:165px">
+                                    <f:selectItem itemLabel="cupertino" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afterdark" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afternoon" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="skyblue" itemValue="cupertino" />
+                                    <f:selectItems value="#{themeSwitcherView.themes}" var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme.name}"/>
+                                </p:themeSwitcher>-->
+                <p:toolbar id="toolbar">
+                    <f:facet name="left">
+                        <p:commandButton ajax="false" type="submit" value="Sale" immediate="true" action="Sale.xhtml?faces-redirect=true" icon="fa fa-fw fa-edit" />
+                        <p:commandButton ajax="false" type="submit" value="Medicine Stock" immediate="true" action="SaleMedicine.xhtml?faces-redirect=true" icon="fa fa-fw fa-life-saver"/>
+                        <p:commandButton ajax="false" type="submit" value="Daily Sale Report" immediate="true" action="DailySaleReport.xhtml?faces-redirect=true" icon="fa fa-fw fa-life-saver"/>
+                        <p:commandButton ajax="false" type="submit" value="Daily Purchase Report" immediate="true" action="PurchaseReport.xhtml?faces-redirect=true" icon="fa fa-fw fa-clock-o"/>
+                        
+                    </f:facet>
+                    <f:facet name="right">
+                        <p:menuButton value="Navigate">
+                            <p:menuitem value="Logout" action="#{loginBean.logout()}" disabled="#{loginBean.user==null}"  immediate="true"/>
+                            <p:menuitem value="Home" disabled="true"/>
+                            <p:menuitem value="Prescription"  disabled="true"/>
+                            <p:menuitem value="Medicine" disabled="true"/>
+                        </p:menuButton>
+                    </f:facet>
+                </p:toolbar>
+                <p:spacer/>
+                <div class="ui-fluid">
+                    <p:fieldset legend="Sale">
+                        <h:panelGrid columns="2" style="width:100%" columnClasses="col40,col60" 
+                                     styleClass="panelGridCenter companyHeaderGrid ui-fluid">
+
+                            <h:panelGroup>
+
+                                <p:fieldset legend="Patient Details">
+                                    <p:panelGrid columns="2" styleClass="companyHeaderGrid" style="width:100%">
+                                        <p:outputLabel>
+                                            Sale Date
+                                        </p:outputLabel>
+                                        <p:datePicker id="saleDate" required="true" requiredMessage="Sale Date is necessary" value="#{saleBean.saleDate}"
+                                                      pattern="yyyy/MM/dd">
+                                            <f:convertDateTime pattern="yyyy/MM/dd" type="localDate"/>
+                                        </p:datePicker> 
+
+                                    </p:panelGrid>
+                                </p:fieldset>
+                                <p:spacer>  </p:spacer>
+                                <p:fieldset legend="Bill Details">
+                                    <p:panelGrid columns="2" styleClass="companyHeaderGrid" style="width:100%">
+
+
+
+                                        <p:outputLabel>
+                                            Total Bill
+                                        </p:outputLabel> 
+                                        <p:inputText  id="totalBill" style="width: 100%" readonly="true" value="#{saleBean.totalBill}" 
+                                                      ></p:inputText >
+
+                                    </p:panelGrid>
+                                </p:fieldset>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:fieldset legend="MedicineDetails" >
+
+                                    <h:panelGrid columns="5"  columnClasses="col35,col25,col15,col15,col15">
+                                        <h:outputText class="label label-success"  value="Medicine" />
+                                        <h:outputText style="text-align: center" class="label label-success"  value="Quantity" />
+                                        <h:outputText class="label label-success"  value="Price"  />
+                                        <h:outputText class="label label-success"  value="Stock"  />
+                                        <h:panelGroup/>
+                                        <p:selectOneMenu id="medicine" style="width: 100%" value="#{saleBean.medicineId}" var="med" filter="true" filterMatchMode="contains" >
+                                            <f:selectItems value="#{saleBean.medicineList}" var="meds" itemLabel="#{meds.medicineName}" itemValue="#{meds.medicineId}" />
+                                            <f:ajax execute="this"  render="saleQuantity stock salePrice"/>
+                                            <!--<p:ajax event="change" listener="#{saleBean.onMedicineMenuSelect(meds)}" update="saleQuantity stock salePrice msgs"/>-->
+
+                                        </p:selectOneMenu>
+                                        <p:inputText  id="saleQuantity" style="width: 100%" value="#{saleBean.saleQuantity}" 
+                                                      ></p:inputText >
+                                        <p:inputText  id="salePrice" value="#{saleBean.salePrice}" />
+                                        <p:outputLabel  id="stock" style="color: green" value="#{saleBean.saleStock}" />
+                                        <p:commandButton id="cmdSave" ajax="true" type="submit" value="Sale" action="#{saleBean.addMedicineSale()}" 
+                                                         process="medicine saleQuantity salePrice sales totalBill saleDate
+                                                         @this" update="@form msgs"/>
+
+                                    </h:panelGrid>
+                                    <p:commandButton id="cmdAddAdvise" accesskey="A" update="medicine sales totalBill msgs" process="medicine saleQuantity salePrice  @this" icon="fa fa-fw fa-plus" value="Add" action="#{saleBean.addMedicineToTable()}"/>
+                                    <p:dataTable id="sales"  var="sale" value="#{saleBean.saleDetailsDTOList}">
+                                        <p:column headerText="Medicine" style="width: 45%">
+                                            <h:outputText value="#{sale.medicineName}" />
+                                        </p:column>
+
+                                        <p:column headerText="Quantity" style="text-align: center;width: 25%" >
+                                            <h:outputText value="#{sale.saleQuantity}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Price" style="text-align: center;width:15%" >
+                                            <h:outputText value="#{sale.salePrice}" />
+                                        </p:column>
+                                        <p:column headerText="Total Price" style="text-align: center;width:15%" >
+                                            <h:outputText value="#{sale.medicineTotal}" />
+                                        </p:column>
+                                        <p:column headerText="Delete" style="text-align: center;width: 15%">
+                                            <p:commandButton  value="Delete" action="#{saleBean.deleteMedicine(sale)}"  process="@this" update="sales :saleForm:totalBill"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:fieldset>
+                                <p:spacer/>
+
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:spacer/>
+                    <p:spacer/>
+
+                    <p:fieldset legend="Purchase" collapsed="true" toggleable="true">
+                        <h:panelGrid columns="2" style="width:100%" columnClasses="col40,col60" 
+                                     styleClass="panelGridCenter companyHeaderGrid ui-fluid">
+
+                            <h:panelGroup>
+
+
+                                <p:spacer>  </p:spacer>
+                                <p:fieldset legend="Bill Details">
+                                    <p:panelGrid columns="2" styleClass="companyHeaderGrid" style="width:100%">
+
+
+                                        <p:outputLabel>
+                                            Date
+                                        </p:outputLabel>
+                                        <p:datePicker id="purchaseDate" required="true" requiredMessage="Purchase Date is necessary" value="#{saleBean.purchaseDate}"
+                                                      pattern="yyyy/MM/dd">
+                                            <f:convertDateTime pattern="yyyy/MM/dd" type="localDate"/>
+                                        </p:datePicker> 
+
+                                        <p:outputLabel>
+                                            Total Bill
+                                        </p:outputLabel> 
+                                        <p:inputText  id="totalPurchaseBill" style="width: 100%" readonly="true" value="#{saleBean.totalPurchaseBill}" 
+                                                      ></p:inputText >
+
+                                    </p:panelGrid>
+                                </p:fieldset>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <p:fieldset legend="Purchase Details" >
+
+                                    <h:panelGrid columns="5"  columnClasses="col35,col25,col15,col15,col15">
+                                        <h:outputText class="label label-success"  value="Medicine" />
+                                        <h:outputText style="text-align: center" class="label label-success"  value="Quantity" />
+                                        <h:outputText class="label label-success"  value="Price"  />
+                                        <!--<h:outputText class="label label-success"  value="Stock"  />-->
+                                        <h:panelGroup/>
+                                        <p:selectOneMenu id="purchaseMedicine" style="width: 100%" value="#{saleBean.purchaseMedicineId}" var="med" filter="true" filterMatchMode="contains" >
+                                            <f:selectItems value="#{saleBean.purchaseMedicineList}" var="meds" itemLabel="#{meds.medicineName}" itemValue="#{meds.medicineId}" />
+                                            <f:ajax execute="this"  render="purchaseQuantity purchacePrice "/>
+
+                                        </p:selectOneMenu>
+                                        <p:inputText  id="purchaseQuantity" style="width: 100%" value="#{saleBean.purchaseQuantity}" 
+                                                      ></p:inputText >
+                                        <p:inputText  id="purchasePrice" value="#{saleBean.purchasePrice}" />
+                                        <!--<p:outputLabel  id="stock" style="color: green" value="#{saleBean.saleStock}" />-->
+                                        <p:commandButton id="cmdPurchaseSave" ajax="true" type="submit" value="Purchase" action="#{saleBean.addMedicinePurchase()}" 
+                                                         process="purchaseQuantity purchasePrice purchaseMedicine purchaseTable purchaseDate totalPurchaseBill
+                                                         @this" update="@form msgs"/>
+
+                                    </h:panelGrid>
+                                    <p:commandButton id="cmdAddPurchase" accesskey="p"  update="purchaseMedicine purchaseTable  totalPurchaseBill msgs" process="purchaseMedicine purchaseQuantity purchasePrice  @this" icon="fa fa-fw fa-plus" value="Add" action="#{saleBean.addPurchaseToTable()}"/>
+                                    <p:dataTable id="purchaseTable"  var="purchase" value="#{saleBean.purchaseDTOList}">
+                                        <p:column headerText="Medicine" style="width: 45%">
+                                            <h:outputText value="#{purchase.medicineName}" />
+                                        </p:column>
+
+                                        <p:column headerText="Quantity" style="text-align: center;width: 25%" >
+                                            <h:outputText value="#{purchase.purchaseQuantity}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Price" style="text-align: center;width:15%" >
+                                            <h:outputText value="#{purchase.purchasePrice}" />
+                                        </p:column>
+                                        <p:column headerText="Total Price" style="text-align: center;width:15%" >
+                                            <h:outputText value="#{purchase.medicineTotal}" />
+                                        </p:column>
+                                        <p:column headerText="Delete" style="text-align: center;width: 15%">
+                                            <p:commandButton  value="Delete" action="#{saleBean.deletePurchaseMedicine(purchase)}"  process="@this" update="purchaseTable :saleForm:totalPurchaseBill"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:fieldset>
+                                <p:spacer/>
+
+                            </h:panelGroup>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </div>
+            </h:form>
+        </h:body>
+    </f:view>
+</html>
+

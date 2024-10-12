@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <h:outputStylesheet library="css" name="prescriptioncss.css" />
+            <script type="text/javascript">
+                function endsWithSpace(itemLabel, filterValue) {
+                    return filterValue.endsWith(' ');
+                }
+            </script>
+
+        </h:head>
+
+        <h:body>
+            <h:form id="saleReportForm">
+                <!--<h:messages id="messages"/>-->
+                <!--<p:autoUpdate>-->
+                <p:growl id="msgs" showDetail="true"/>
+                <!--</p:autoUpdate>-->
+                <!--                <p:themeSwitcher id="basic" style="width:165px">
+                                    <f:selectItem itemLabel="cupertino" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afterdark" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="afternoon" itemValue="cupertino" />
+                                    <f:selectItem itemLabel="skyblue" itemValue="cupertino" />
+                                    <f:selectItems value="#{themeSwitcherView.themes}" var="theme" itemLabel="#{theme.displayName}" itemValue="#{theme.name}"/>
+                                </p:themeSwitcher>-->
+                <p:toolbar id="toolbar">
+                    <f:facet name="left">
+                        <p:commandButton ajax="false" type="submit" value="Sale" immediate="true" action="Sale.xhtml?faces-redirect=true" icon="fa fa-fw fa-edit" />
+                        <p:commandButton ajax="false" type="submit" value="Medicine Stock" immediate="true" action="SaleMedicine.xhtml?faces-redirect=true" icon="fa fa-fw fa-life-saver"/>
+                        <p:commandButton ajax="false" type="submit" value="Daily Sale Report" immediate="true" action="DailySaleReport.xhtml?faces-redirect=true" icon="fa fa-fw fa-life-saver"/>
+                        <p:commandButton ajax="false" type="submit" value="Daily Purchase Report" immediate="true" action="PurchaseReport.xhtml?faces-redirect=true" icon="fa fa-fw fa-clock-o"/>
+                         </f:facet>
+                    <f:facet name="right">
+                        <p:menuButton value="Navigate">
+                            <p:menuitem value="Logout" action="#{loginBean.logout()}" disabled="#{loginBean.user==null}"  immediate="true"/>
+                            <p:menuitem value="Home" disabled="true"/>
+                            <p:menuitem value="Prescription"  disabled="true"/>
+                            <p:menuitem value="Medicine" disabled="true"/>
+                        </p:menuButton>
+                    </f:facet>
+                </p:toolbar>
+                <p:spacer/>
+                <div class="ui-fluid">
+
+                    <p:panelGrid columns="4">
+
+
+
+
+                        <p:outputLabel>
+                            Start Date
+                        </p:outputLabel>
+                        <p:datePicker id="startDate" required="true" requiredMessage="Sale Date is necessary" value="#{saleReportBean.startDate}"
+                                      pattern="yyyy/MM/dd">
+                            <f:convertDateTime pattern="yyyy/MM/dd" type="localDate"/>
+                            <p:ajax event="dateSelect" listener="#{saleReportBean.onDateSelect()}" update="saleReportTable" />
+                        </p:datePicker> 
+                        <p:outputLabel>
+                            End Date
+                        </p:outputLabel>
+                        <p:datePicker id="endDate" required="true" requiredMessage="Sale Date is necessary" value="#{saleReportBean.endDate}"
+                                      pattern="yyyy/MM/dd" >
+                            <f:convertDateTime pattern="yyyy/MM/dd" type="localDate"/>
+                            <p:ajax event="dateSelect" listener="#{saleReportBean.onDateSelect()}" update="saleReportTable" />
+
+
+                        </p:datePicker> 
+
+                    </p:panelGrid>
+                    <p:fieldset legend="Sale Report">
+                        <p:panelGrid columns="2" style="width: 100%" styleClass="companyHeaderGrid">
+                            <p:fieldset legend="Report By Date">
+
+                                <p:dataTable id="saleReportTable" scrollable="true" scrollWidth="100%" scrollHeight="100%" value="#{saleReportBean.saleReportDTOList}" 
+                                             var="report" rowKey="#{report.saleDate}" selectionMode="single" selection="#{saleReportBean.selectedDate}" >
+                                    <p:ajax event="rowSelect" listener="#{saleReportBean.onRowSelect()}" update=":saleReportForm:billReportTable"/>
+
+
+<!--                                <p:column headerText="Sale Id" style="width:100px" filterBy="#{report.saleId}" >
+                                    <h:outputText value="#{report.saleId}"/>
+
+                                </p:column>-->
+                                    <p:column headerText="Sale Date" style="width:70px" filterBy="#{report.saleDate}" >
+
+                                        <p:outputLabel  value="#{report.saleDate}" />
+                                    </p:column>
+                                    <p:column headerText="Sale Total" style="width:70px" filterBy="#{report.totalSale}" >
+
+                                        <p:outputLabel  value="#{report.totalSale}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:fieldset>
+
+                            <p:fieldset legend="Bill Report By Date">
+
+                                <p:dataTable id="billReportTable" scrollable="true" scrollWidth="100%" scrollHeight="100%" value="#{saleReportBean.billReportDTOList}" 
+                                             var="report"  >
+
+
+                                    <p:column headerText="Sale Id" style="width:100px" filterBy="#{report.saleId}" >
+                                        <h:outputText value="#{report.saleId}"/>
+
+                                    </p:column>
+
+                                    <p:column headerText="Sale Total" style="width:70px" filterBy="#{report.totalSale}" >
+
+                                        <p:outputLabel  value="#{report.totalSale}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:fieldset>
+
+                        </p:panelGrid>
+
+
+                    </p:fieldset>
+
+                </div>
+            </h:form>
+        </h:body>
+    </f:view>
+</html>
+

@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        </h:head>
+        <h:body>
+            <h:form>
+                <p:growl id="msgs" showDetail="true" />
+                <p:panelGrid columns="2" style="width: 90%" styleClass="panelGridCenter companyHeaderGrid">
+                    <p:panelGrid columns="4" style="width: 50%" styleClass="companyHeaderGrid">
+                        <h:panelGroup>
+                            <p:fieldset legend="Patient">
+                                <p:panelGrid columns="2" style="width: 500px" styleClass="companyHeaderGrid">
+                                    <p:outputLabel>
+                                        Patient Number
+                                    </p:outputLabel>
+                                    <p:selectOneMenu id="patientId" value="#{patientHistoryBean.patientId}" var="patient" filter="true" filterMatchMode="contains" 
+                                                     style="width:300px">
+                                        <f:selectItems value="#{patientHistoryBean.patientList}" var="patients" itemLabel="#{patients}" itemValue="#{patients.patientId}" />
+
+                                        <f:ajax execute="this" render="patientId patientName patientAddress patientGender patientAge patientPhone patientsVisists"/>
+                                    </p:selectOneMenu>
+                                    <p:outputLabel for="@next" value="Name"/>
+                                    <p:inputText  styleClass="form-control" id="patientName" value="#{patientHistoryBean.patientName}" 
+                                                  style="width:300px" required="true" requiredMessage="Patient Name is Required" />
+
+                                    <p:outputLabel>
+                                        Address
+                                    </p:outputLabel>
+                                    <p:inputText  id="patientAddress" styleClass="form-control" value="#{patientHistoryBean.patientAddress}" 
+                                                  required="true" style="width:300px" requiredMessage="Patient Address is Required"></p:inputText >
+                                    <p:outputLabel>
+                                        Phone
+                                    </p:outputLabel>
+                                    <p:inputText  id="patientPhone" styleClass="form-control" value="#{patientHistoryBean.patientPhone}" 
+                                                  style="width:300px"  />
+                                </p:panelGrid>
+                                <p:panelGrid columns="4" style="width: 500px" styleClass="companyHeaderGrid">
+                                    <p:outputLabel>
+                                        Gender
+                                    </p:outputLabel>
+                                    <p:selectBooleanButton id="patientGender" value="#{patientHistoryBean.patientGender}" onLabel="Male"  offLabel="Female" 
+                                                           style="width:100px" />
+                                </p:panelGrid>
+                            </p:fieldset>
+                            <p:spacer/>
+                        </h:panelGroup>
+                    </p:panelGrid>
+                    <h:panelGroup>
+                        <p:dataTable id="patientVisits" var="visit" value="#{patientHistoryBean.patientVisits}" >
+                            <f:facet name="header">
+                                Expand rows to see visit advises
+                            </f:facet>
+                            <p:column style="width:16px">
+                                <p:rowToggler />
+                            </p:column>
+                            <p:column headerText="Date">
+                                <h:outputText value="#{visit.visitDate}" />
+                            </p:column>
+                            <p:column headerText="BP">
+                                <h:outputText value="#{visit.patientBloodPressure}" />
+                            </p:column>
+<!--                            <p:column headerText="Temperature">
+                                <h:outputText value="#{visit.patientTemperature}" />
+                            </p:column>
+                            <p:column headerText="Pulse">
+                                <h:outputText value="#{visit.patientPulse}" />
+                            </p:column>
+                            <p:column headerText="Weight">
+                                <h:outputText value="#{visit.patientWeight}" />
+                            </p:column>-->
+
+                            <!--<p:rowExpansion>-->
+                            <p:subTable id="advises" var="advise" value="#{visit.adviseEntityList}">
+                                    <p:column headerText="Medicine" width="200">
+                                        <h:outputText value="#{advise.medicineDescription}" />
+                                    </p:column>
+
+                                    <p:column headerText="Dosage" width="100" style="text-align: center">
+                                        <h:outputText value="#{advise.medicineDosage}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Days" width="80" style="text-align: center">
+                                        <h:outputText value="#{advise.medicineDays}" />
+                                    </p:column>
+                                </p:subTable>
+                            <!--</p:rowExpansion>-->
+                        </p:dataTable>
+                    </h:panelGroup>
+                </p:panelGrid>
+
+            </h:form>
+        </h:body>
+    </f:view>
+</html>
+
